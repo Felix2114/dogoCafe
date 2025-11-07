@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { Link } from "react-scroll";
-
+import Image from "next/image";
 
 
 
@@ -45,36 +45,70 @@ export default function LandingPage() {
       </nav>
 
 
-      {/* ✅ HERO */}
-      <section
-        id="inicio"
-        className="h-screen bg-[url('/images/hero-cafe.jpeg')] bg-cover bg-center relative flex items-center justify-center"
-      >
-        <div className="absolute inset-0 bg-gradient-to-b from-[#4B2E05]/70 to-[#4B2E05]/40"></div>
+    {/* ✅ HERO */}
+<section
+  id="inicio"
+  className="h-screen relative flex items-center justify-center overflow-hidden"
+>
+  {/* ✅ Scroll + transform */}
+  {(() => {
+    const { scrollYProgress } = useScroll();
+    const parallax = useTransform(scrollYProgress, [0, 1], [0, -80]);
 
+    return (
+      <>
+        {/* ✅ Imagen con zoom-in al cargar */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="relative text-center text-[#F5EEE6] px-4"
-        >
-          <h2 className="font-playfair text-5xl md:text-6xl font-bold mb-4">
-            Dogo Café
-          </h2>
-          <p className="text-lg md:text-xl mb-6 max-w-2xl mx-auto">
-            Café de especialidad, pan artesanal y un ambiente que te invita a quedarte.
-            Somos una cafetería artesanal en Orizaba, reconocida por tener la
-            “Mejor Barra del 2024”.
-          </p>
-          <motion.a
-            href="#menu"
-            whileHover={{ scale: 1.05 }}
-            className="bg-[#E1A74A] text-[#4B2E05] px-6 py-3 rounded-full shadow-md font-semibold cursor-pointer"
-          >
-            Conoce nuestro menú
-          </motion.a>
-        </motion.div>
-      </section>
+          initial={{ scale: 1.15, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 1.3, ease: "easeOut" }}
+          style={{
+            backgroundImage: "url('/images/hero-cafe.jpeg')",
+          }}
+          className="absolute inset-0 bg-cover bg-center"
+        />
+
+        {/* ✅ Parallax suave */}
+        <motion.div
+          style={{
+            backgroundImage: "url('/images/hero-cafe.jpeg')",
+            y: parallax,
+          }}
+          className="absolute inset-0 bg-cover bg-center"
+        />
+      </>
+    );
+  })()}
+
+  {/* ✅ Overlay */}
+  <div className="absolute inset-0 bg-gradient-to-b from-[#4B2E05]/70 to-[#4B2E05]/40"></div>
+
+  {/* ✅ Contenido */}
+  <motion.div
+    initial={{ opacity: 0, y: 30 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 1 }}
+    className="relative text-center text-[#F5EEE6] px-4"
+  >
+    <h2 className="font-playfair text-5xl md:text-6xl font-bold mb-4">Dogo Café</h2>
+
+    <p className="text-lg md:text-xl mb-6 max-w-2xl mx-auto">
+      Café de especialidad, pan artesanal y un ambiente que te invita a quedarte.
+      Somos la cafetería artesanal más querida de Orizaba, reconocida por tener la
+      “Mejor Barra del 2024”.
+    </p>
+
+    <motion.a
+      href="#menu"
+      whileHover={{ scale: 1.05 }}
+      className="bg-[#E1A74A] text-[#4B2E05] px-6 py-3 rounded-full shadow-md font-semibold cursor-pointer"
+    >
+      Conoce nuestro menú
+    </motion.a>
+  </motion.div>
+</section>
+
+
 
 
       {/* ✅ SOBRE NOSOTROS (SECCIÓN CORREGIDA) */}
@@ -398,33 +432,62 @@ export default function LandingPage() {
         </p>
       </section>
 
-      {/* ✅ GALERÍA */}
-      <section id="galeria" className="py-24 px-6 bg-[#EDE2D1]">
-        <div className="max-w-6xl mx-auto text-center">
-          <motion.h3 initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
-            className="font-playfair text-4xl mb-10 text-[#4B2E05]">
-            Galería
-          </motion.h3>
+   {/* ✅ GALERÍA */}
+<section id="galeria" className="py-24 px-6 bg-[#EDE2D1]">
+  <div className="max-w-6xl mx-auto text-center">
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {[
-              "/images/gallery-1.jpg",
-              "/images/gallery-2.jpg",
-              "/images/gallery-3.jpg",
-              "/images/gallery-4.jpg",
-              "/images/gallery-5.jpg",
-              "/images/gallery-6.jpg",
-            ].map((src, i) => (
-              <motion.img
-                key={i}
-                whileHover={{ scale: 1.05 }}
-                src={src}
-                className="w-full h-60 object-cover rounded-2xl shadow-md"
-              />
-            ))}
-          </div>
-        </div>
-      </section>
+    {/* Título animado */}
+    <motion.h3
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      viewport={{ once: true }}
+      className="font-playfair text-4xl mb-10 text-[#4B2E05]"
+    >
+      Galería
+    </motion.h3>
+
+    {/* Contenedor con stagger */}
+    <motion.div
+      className="grid grid-cols-2 md:grid-cols-3 gap-4"
+      initial="hidden"
+      whileInView="show"
+      viewport={{ once: true }}
+      variants={{
+        show: {
+          transition: { staggerChildren: 0.15 }
+        }
+      }}
+    >
+      {[
+        "/images/gallery-1.jpg",
+        "/images/gallery-2.jpg",
+        "/images/gallery-3.jpg",
+        "/images/gallery-4.jpg",
+        "/images/gallery-5.jpg",
+        "/images/gallery-6.jpg",
+      ].map((src, i) => (
+        <motion.div
+          key={i}
+          variants={{
+            hidden: { opacity: 0, y: 30 },
+            show: { opacity: 1, y: 0 }
+          }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+        >
+          <Image
+            src={src}
+            width={600}
+            height={400}
+            alt={`Galería ${i}`}
+            className="w-full h-60 object-cover rounded-2xl shadow-md transition-transform duration-300 hover:scale-105"
+          />
+        </motion.div>
+      ))}
+    </motion.div>
+  </div>
+</section>
+
 
 
       {/* ✅ UBICACIÓN */}
